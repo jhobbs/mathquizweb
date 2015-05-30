@@ -1,0 +1,38 @@
+.top-bar {
+  background: #1A2366;
+}
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background: #1A2366;
+}
+
+.required {
+  font-style: italic;
+}
+
+.help-text {
+  font-size: small; 
+}
+
+.button {
+  background-color: #006756;
+}
+
+.button:hover {
+  background-color: #00362D;
+}
+
+.button.alert:hover {
+  background-color: #552300;
+}
+
+.button.alert {
+  background-color: #A34200;
+}
+
+.top-bar-section:hover  li:not(.has-form) a:not(.button):hover {
+  background: #0A1356;
+}
+
+.top-bar.expanded .title-area {
+  background-color: #0A1356;
+}

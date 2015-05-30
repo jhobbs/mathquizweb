@@ -1,0 +1,7 @@
+{% extends "detail.html" %}
+{% block detail %}
+<p>Username: {{ object.get_username}}</p>
+<p>Email: {{ object.email }}</p>
+<p>iCalendar Feed URL: <a href="{{ calendar_url }}">{{ calendar_url }}</a></p>
+Copy the above URL and see <a href="https://support.google.com/calendar/answer/37100?hl=en">Google's instructions</a> to add a feed to your Google Calendar.
+{% endblock %}

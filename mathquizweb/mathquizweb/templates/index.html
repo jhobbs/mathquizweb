@@ -1,5 +1,12 @@
-<p>
-{{question.explain}}
-<br>
-{{question.question_string}}
-</p>
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+        <p>
+        {{question.explain}}
+        <br>
+        {{question.question_string}}
+        </p>
+    </div>
+</div>
+{% endblock %}

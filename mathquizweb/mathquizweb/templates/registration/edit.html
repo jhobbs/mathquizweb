@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <h2>Edit Account Information</h2>
+    <form id="user_form" method="post" action="/accounts/edit/"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit" value="Save" class="button tiny" />
+    </form>
+</div>
+{% endblock %}
