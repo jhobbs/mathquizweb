@@ -12,7 +12,7 @@ defaultoptions = namedtuple('options', [])
 def home(request):
     context = RequestContext(request)
 
-    user_data = get_current_user_data('web')
+    user_data = get_current_user_data(request.user.username)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
 
