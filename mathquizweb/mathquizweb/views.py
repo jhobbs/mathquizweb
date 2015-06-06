@@ -27,10 +27,14 @@ def home(request):
     context = RequestContext(request)
 
     stats = generate_stats(request.user.username)
+    question_types = {k.name: v for k, v in stats['question_types'].items()}
 
     return render_to_response(
         'index.html',
-        {'stats': stats},
+        {
+            'stats': stats,
+            'question_types': question_types
+        },
         context_instance=context)
 
 def register(request):

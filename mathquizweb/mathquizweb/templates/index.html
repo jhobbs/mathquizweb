@@ -9,9 +9,19 @@
         <p>Total questions: {{stats.questions.total}}</p>
         <p>Correctly answered questions: {{stats.questions.correct}}</p>
         <p>Overall success rate: {{stats.questions.correct}}%</p>
-        <p>Question history for last {{stats.mastery_size}} of each type</p>
-        {% for question_name, question_info in stats.question_types %}
-        <p>{{question_name}}</p>
+        <p>Question history for last {{stats.mastery_size}} of each type:</p>
+        <table>
+            <tr>
+                <td><b>Question Type</b></td>
+                <td><b>Mastery</b></td>
+                <td><b>History</b></td>
+            </tr>
+            {% for name, history in question_types.items %}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{history.mastery}}</td>
+                <td>{{history.correct}}/{{history.total}}</td>
+            </tr>
         {% endfor %}
         {% endif %}
     </div>
