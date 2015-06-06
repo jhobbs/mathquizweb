@@ -18,7 +18,7 @@ def question(request):
     [question] = quiz.questions(1, defaultoptions)
 
     return render_to_response(
-        'index.html',
+        'question.html',
         {'question': question},
         context_instance=context)
 
