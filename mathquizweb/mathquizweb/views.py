@@ -4,12 +4,13 @@ from collections import namedtuple
 from mathquiz.quiz import Quiz
 from mathquiz.questions import builtin_question_types
 from mathquiz.storage import get_current_user_data
+from mathquiz.stats import generate_stats 
 
 from mathquizweb.forms import UserForm
 
 defaultoptions = namedtuple('options', [])
 
-def home(request):
+def question(request):
     context = RequestContext(request)
 
     user_data = get_current_user_data(request.user.username)
@@ -19,6 +20,17 @@ def home(request):
     return render_to_response(
         'index.html',
         {'question': question},
+        context_instance=context)
+
+
+def home(request):
+    context = RequestContext(request)
+
+    stats = generate_stats(request.user.username)
+
+    return render_to_response(
+        'index.html',
+        {'stats': stats},
         context_instance=context)
 
 def register(request):

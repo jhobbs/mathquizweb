@@ -2,11 +2,18 @@
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
-        <p>
-        {{question.explain}}
-        <br>
-        {{question.question_string}}
-        </p>
+        <h1>Your stats</h1>
+        {% if stats.questions.total == 0 %}
+        <p>No questions answered yet.</p>
+        {% else %}
+        <p>Total questions: {{stats.questions.total}}</p>
+        <p>Correctly answered questions: {{stats.questions.correct}}</p>
+        <p>Overall success rate: {{stats.questions.correct}}%</p>
+        <p>Question history for last {{stats.mastery_size}} of each type</p>
+        {% for question_name, question_info in stats.question_types %}
+        <p>{{question_name}}</p>
+        {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}
