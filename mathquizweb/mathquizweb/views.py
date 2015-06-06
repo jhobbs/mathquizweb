@@ -25,16 +25,19 @@ def question(request):
 
 def home(request):
     context = RequestContext(request)
+    data = {}
 
-    stats = generate_stats(request.user.username)
-    question_types = {k.name: v for k, v in stats['question_types'].items()}
+    if request.user.is_authenticated():
+        stats = generate_stats(request.user.username)
+        data['stats'] = stats
+        data['question_types'] = {
+            k.name: v
+            for k, v in stats['question_types'].items()
+        }
 
     return render_to_response(
         'index.html',
-        {
-            'stats': stats,
-            'question_types': question_types
-        },
+        data,
         context_instance=context)
 
 def register(request):

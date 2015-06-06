@@ -2,6 +2,7 @@
 {% block content %}
 <div class="row">
     <div class="large-12 columns">
+        {% if user.is_authenticated %}
         <h1>Your stats</h1>
         {% if stats.questions.total == 0 %}
         <p>No questions answered yet.</p>
@@ -23,6 +24,10 @@
                 <td>{{history.correct}}/{{history.total}}</td>
             </tr>
         {% endfor %}
+        {% endif %}
+        {% else %}
+        <h1>mathquiz</h1>
+        <a href="/accounts/register">Sign up</a> or <a href="/accounts/login">sign in</a> to start your math quiz!
         {% endif %}
     </div>
 </div>
