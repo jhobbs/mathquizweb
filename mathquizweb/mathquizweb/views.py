@@ -3,7 +3,10 @@ from django.template import RequestContext
 from collections import namedtuple
 from mathquiz.quiz import Quiz
 from mathquiz.questions import builtin_question_types
-from mathquiz.storage import get_current_user_data
+from mathquiz.storage import (
+    get_current_user_data,
+    add_unanswered_question,
+    )
 from mathquiz.stats import generate_stats 
 
 from mathquizweb.forms import UserForm
@@ -13,9 +16,11 @@ defaultoptions = namedtuple('options', [])
 def question(request):
     context = RequestContext(request)
 
-    user_data = get_current_user_data(request.user.username)
+    user = request.user.username
+    user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
+    add_unanswered_question(user, question)
 
     return render_to_response(
         'question.html',
