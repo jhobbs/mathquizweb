@@ -6,6 +6,7 @@ from mathquiz.questions import builtin_question_types
 from mathquiz.storage import (
     get_current_user_data,
     add_unanswered_question,
+    get_unanswered_question,
     )
 from mathquiz.stats import generate_stats 
 
@@ -19,19 +20,29 @@ defaultoptions = namedtuple('options', [])
 
 def question(request):
     context = RequestContext(request)
+    user = request.user.username
 
     data = {}
 
     if request.method == "POST":
         form = QuestionForm(request.POST)
         if form.is_valid():
-            data['response'] = "Answer received!"
+            uuid = form.cleaned_data['uuid']
+            question = get_unanswered_question(user, form.cleaned_data['uuid'])
+            if question is None:
+                data['response'] = 'Unknown question!'
+            else:
+                correct = question.check_answer(form.cleaned_data['answer'])
+                if correct:
+                    data['response'] = 'Correct!'
+                else:
+                    data['response'] = 'Incorrect!'
+
         else:
             data['response'] = "BAD"
     else:
         data['response'] = 'Welcome!'
 
-    user = request.user.username
     user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
