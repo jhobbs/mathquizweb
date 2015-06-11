@@ -7,9 +7,11 @@ from collections import namedtuple
 from mathquiz.quiz import Quiz
 from mathquiz.questions import builtin_question_types
 from mathquiz.storage import (
+    add_answered_question,
     get_current_user_data,
     add_unanswered_question,
     get_unanswered_question,
+    remove_unanswered_question,
     )
 from mathquiz.stats import generate_stats 
 
@@ -21,10 +23,10 @@ from mathquizweb.forms import (
 
 defaultoptions = namedtuple('options', [])
 
-def generate_question_response(user, uuid, answer):
+def generate_question_response(question, answer):
     response = {}
 
-    question = get_unanswered_question(user, uuid)
+
     if question is None:
         response['headline'] = 'Unknown question!'
         return {'headline': 'Unknown question!'}
@@ -53,11 +55,14 @@ def answer(request):
     if request.method == "POST":
         form = QuestionForm(request.POST)
         if form.is_valid():
-            data.update(generate_question_response(
-                user,
-                form.cleaned_data['uuid'],
-                form.cleaned_data['answer'],
-                ))
+            answer = form.cleaned_data['answer']
+            uuid = form.cleaned_data['uuid']
+            question = get_unanswered_question(user, uuid)
+            data.update(generate_question_response(question, answer))
+            if question:
+                add_answered_question(
+                    user, question, answer, question.check_answer(answer))
+                remove_unanswered_question(user, uuid)
         else:
             data['headline'] = "Bad data received!"
     else:
