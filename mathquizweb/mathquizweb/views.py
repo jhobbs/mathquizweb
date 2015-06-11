@@ -9,22 +9,39 @@ from mathquiz.storage import (
     )
 from mathquiz.stats import generate_stats 
 
-from mathquizweb.forms import UserForm
+from mathquizweb.forms import (
+    QuestionForm,
+    UserForm,
+    )
+
 
 defaultoptions = namedtuple('options', [])
 
 def question(request):
     context = RequestContext(request)
 
+    data = {}
+
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            data['response'] = "Answer received!"
+        else:
+            data['response'] = "BAD"
+    else:
+        data['response'] = 'Welcome!'
+
     user = request.user.username
     user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
     add_unanswered_question(user, question)
+    data['question'] = question
+
 
     return render_to_response(
         'question.html',
-        {'question': question},
+        data,
         context_instance=context)
 
 

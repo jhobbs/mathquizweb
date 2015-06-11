@@ -10,3 +10,7 @@ class UserForm(ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
+
+class QuestionForm(forms.Form):
+    answer = forms.CharField(label='Answer')
+    uuid = forms.CharField(label='uuid', widget=forms.widgets.HiddenInput)
