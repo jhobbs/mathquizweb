@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+        {% if user.is_authenticated %}
+        <h1>{{ headline }}</h1>
+        <p>{{ detail }}</p>
+        <a href="{% url 'question' %}">Next Question</a>
+        {% else %}
+        <p>You must be logged in to answer questions!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

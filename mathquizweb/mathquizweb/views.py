@@ -1,4 +1,7 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import (
+    redirect,
+    render_to_response,
+    )
 from django.template import RequestContext
 from collections import namedtuple
 from mathquiz.quiz import Quiz
@@ -18,31 +21,58 @@ from mathquizweb.forms import (
 
 defaultoptions = namedtuple('options', [])
 
-def question(request):
+def generate_question_response(user, uuid, answer):
+    response = {}
+
+    question = get_unanswered_question(user, uuid)
+    if question is None:
+        response['headline'] = 'Unknown question!'
+        return {'headline': 'Unknown question!'}
+
+    correct = question.check_answer(answer)
+
+    if not correct:
+        return {
+            'headline': 'Incorrect!',
+            'detail': "%s is wrong! %s is the correct answer to '%s'" % (
+                answer, question.answer, question.question_string())
+        }
+
+    return {
+        'headline': 'Correct',
+        'detail': "%s is the correct answer to '%s'" % (
+            answer, question.question_string())
+    }
+
+
+def answer(request):
     context = RequestContext(request)
     user = request.user.username
-
     data = {}
 
     if request.method == "POST":
         form = QuestionForm(request.POST)
         if form.is_valid():
-            uuid = form.cleaned_data['uuid']
-            question = get_unanswered_question(user, form.cleaned_data['uuid'])
-            if question is None:
-                data['response'] = 'Unknown question!'
-            else:
-                correct = question.check_answer(form.cleaned_data['answer'])
-                if correct:
-                    data['response'] = 'Correct!'
-                else:
-                    data['response'] = 'Incorrect!'
-
+            data.update(generate_question_response(
+                user,
+                form.cleaned_data['uuid'],
+                form.cleaned_data['answer'],
+                ))
         else:
-            data['response'] = "BAD"
+            data['headline'] = "Bad data received!"
     else:
-        data['response'] = 'Welcome!'
+        return redirect('question')
 
+    return render_to_response(
+        'answer.html',
+        data,
+        context_instance=context)
+
+
+def question(request):
+    context = RequestContext(request)
+    user = request.user.username
+    data = {}
     user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)

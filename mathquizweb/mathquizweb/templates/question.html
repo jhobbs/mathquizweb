@@ -6,7 +6,7 @@
         <h1>Answer the question! {{ response }}</h1>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
-        <form action="/question" method ="post">
+        <form action="{% url 'answer' %}" method ="post">
             {% csrf_token %}
             <label for="answer">Answer: </label>
             <input id="answer" type="text" name="answer"></input>
