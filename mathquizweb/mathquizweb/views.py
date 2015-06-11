@@ -98,6 +98,7 @@ def home(request):
     if request.user.is_authenticated():
         stats = generate_stats(request.user.username)
         if stats is not None:
+            data['stats'] = stats
             data['question_types'] = {
                 k.name: v
                 for k, v in stats['question_types'].items()
