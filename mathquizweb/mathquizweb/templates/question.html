@@ -6,6 +6,13 @@
         <h1>Answer the question!</h1>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
+        <form action="/question" method ="post">
+            {% csrf_token %}
+            <label for="answer">Answer: </label>
+            <input id="answer" type="text" name="answer"></input>
+            <input name="question-id" type="hidden" value="{{question.uuid}}">
+            <input type="submit" value="Submit">
+        </form>
         {% else %}
         <p>You must be logged in to answer questions!</p>
         {% endif %}
