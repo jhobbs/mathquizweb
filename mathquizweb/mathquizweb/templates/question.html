@@ -9,7 +9,7 @@
         <form action="{% url 'answer' %}" method ="post">
             {% csrf_token %}
             <label for="answer">Answer: </label>
-            <input id="answer" type="text" name="answer"></input>
+            <input autocomplete="off" id="answer" type="text" name="answer" autofocus></input>
             <input name="uuid" type="hidden" value="{{question.uuid}}">
             <input type="submit" value="Submit">
         </form>
