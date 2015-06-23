@@ -5,7 +5,10 @@
         {% if user.is_authenticated %}
         <h1>{{ headline }}</h1>
         <p>{{ detail }}</p>
-        <a href="{% url 'question' %}">Next Question</a>
+        <a id="next" href="{% url 'question' %}">Next Question</a>
+        <script>
+            document.getElementById("next").focus();
+        </script>
         {% else %}
         <p>You must be logged in to answer questions!</p>
         {% endif %}
