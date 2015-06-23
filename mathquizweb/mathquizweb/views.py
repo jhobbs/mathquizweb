@@ -20,12 +20,19 @@ from mathquizweb.forms import (
     UserForm,
     )
 
-
 defaultoptions = namedtuple('options', [])
+
+
+def get_default_data(request):
+    data = {}
+    if request.user.is_authenticated():
+        stats = generate_stats(request.user.username)
+        data['stats'] = stats
+
+    return data
 
 def generate_question_response(question, answer):
     response = {}
-
 
     if question is None:
         response['headline'] = 'Unknown question!'
@@ -50,7 +57,7 @@ def generate_question_response(question, answer):
 def answer(request):
     context = RequestContext(request)
     user = request.user.username
-    data = {}
+    data = get_default_data(request)
 
     if request.method == "POST":
         form = QuestionForm(request.POST)
@@ -63,6 +70,7 @@ def answer(request):
                 add_answered_question(
                     user, question, answer, question.check_answer(answer))
                 remove_unanswered_question(user, uuid)
+                data['stats'] = generate_stats(user)
         else:
             data['headline'] = "Bad data received!"
     else:
@@ -77,13 +85,12 @@ def answer(request):
 def question(request):
     context = RequestContext(request)
     user = request.user.username
-    data = {}
+    data = get_default_data(request)
     user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
     add_unanswered_question(user, question)
     data['question'] = question
-
 
     return render_to_response(
         'question.html',
@@ -93,21 +100,20 @@ def question(request):
 
 def home(request):
     context = RequestContext(request)
-    data = {}
+    data = get_default_data(request)
 
     if request.user.is_authenticated():
-        stats = generate_stats(request.user.username)
-        if stats is not None:
-            data['stats'] = stats
+        if data['stats'] is not None:
             data['question_types'] = {
                 k.name: v
-                for k, v in stats['question_types'].items()
+                for k, v in data['stats']['question_types'].items()
             }
 
     return render_to_response(
         'index.html',
         data,
         context_instance=context)
+
 
 def register(request):
     context = RequestContext(request)
