@@ -31,6 +31,7 @@ def get_default_data(request):
 
     return data
 
+
 def generate_question_response(question, answer):
     response = {}
 
@@ -82,15 +83,23 @@ def answer(request):
         context_instance=context)
 
 
-def question(request):
-    context = RequestContext(request)
-    user = request.user.username
-    data = get_default_data(request)
+def get_next_question(user):
+    unanswered = get_unanswered_question(user)
+    if unanswered is not None:
+        return unanswered
+
     user_data = get_current_user_data(user)
     quiz = Quiz(builtin_question_types, user_data)
     [question] = quiz.questions(1, defaultoptions)
     add_unanswered_question(user, question)
-    data['question'] = question
+    return question
+
+
+def question(request):
+    context = RequestContext(request)
+    user = request.user.username
+    data = get_default_data(request)
+    data['question'] = get_next_question(user)
 
     return render_to_response(
         'question.html',
