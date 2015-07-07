@@ -6,6 +6,9 @@
         <h1>Answer the question! {{ response }}</h1>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
+        {% for svg in shape_svgs %}
+        {{ svg|safe }}
+        {% endfor %}
         <form action="{% url 'answer' %}" method ="post">
             {% csrf_token %}
             <label for="answer">Answer: </label>
