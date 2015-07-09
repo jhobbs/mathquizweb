@@ -22,6 +22,8 @@ from mathquizweb.forms import (
 
 defaultoptions = namedtuple('options', [])
 
+import mathquizweb.models
+
 
 def get_default_data(request):
     data = {}
