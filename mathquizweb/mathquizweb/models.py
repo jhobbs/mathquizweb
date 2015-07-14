@@ -2,7 +2,7 @@ import uuid
 
 from django.contrib.auth.models import User
 from django.db import models
-from jsonfield import JSONField
+from yamlfield.fields import YAMLField
 
 
 class QuestionType(models.Model):
@@ -19,5 +19,5 @@ class Question(models.Model):
     question_type = models.ForeignKey(QuestionType)
     state = models.ForeignKey(QuestionState)
     answer_string = models.CharField(max_length=255)
-    properties = JSONField()
-    options = JSONField()
+    options = models.TextField()
+    properties = models.TextField()

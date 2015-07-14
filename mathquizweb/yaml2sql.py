@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import yaml
 from mathquiz import storage
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mathquizweb.settings")
@@ -30,18 +31,19 @@ def migrate_question_result(user, question_result):
     user = User.objects.get(username=user)
     state = QuestionState.objects.get(name='answered')
     yaml_question = question_result.question
-    properties = {
+    properties = yaml.dump({
         k: v for k,v in yaml_question.__dict__.iteritems()
-        if not k in default_properties}
+        if not k in default_properties})
     question = Question(
         id=yaml_question.uuid,
         user=user,
         question_type=question_type,
         state=state,
         answer_string="%s" % question.answer,
-        properties=properties,
-        options=yaml_question.provided_options,
+        properties=properties
+#        options=yaml_question.provided_options,
         )
+    print question.properties
     question.save()
 
 def migrate_data_for_user(user):
