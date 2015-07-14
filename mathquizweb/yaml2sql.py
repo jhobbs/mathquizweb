@@ -5,25 +5,44 @@ from mathquiz import storage
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mathquizweb.settings")
 
-from mathquizweb.models import QuestionType
+from mathquizweb.models import (
+   QuestionState,
+   QuestionType,
+   Question)
+from django.contrib.auth.models import User
 
 
 def ensure_question_type(question_type_name):
      try:
-         QuestionType.objects.get(name=question_type_name)
+         return QuestionType.objects.get(name=question_type_name)
      except QuestionType.DoesNotExist:
          print("Adding: %s" % (question_type_name))
          qt = QuestionType(name=question_type_name)
          qt.save()
+         return qt
 
+default_properties = ['uuid', 'provided_options', 'answer_string']
 
 def migrate_question_result(user, question_result):
     question = question_result.question
-    question_type = question.name
-    print("ensuring type exists: %s" % (question_type))
-    ensure_question_type(question_type)
-
-
+    question_type_name = question.name
+    question_type = ensure_question_type(question_type_name)
+    user = User.objects.get(username=user)
+    state = QuestionState.objects.get(name='answered')
+    yaml_question = question_result.question
+    properties = {
+        k: v for k,v in yaml_question.__dict__.iteritems()
+        if not k in default_properties}
+    question = Question(
+        id=yaml_question.uuid,
+        user=user,
+        question_type=question_type,
+        state=state,
+        answer_string="%s" % question.answer,
+        properties=properties,
+        options=yaml_question.provided_options,
+        )
+    question.save()
 
 def migrate_data_for_user(user):
     user_data = storage.get_current_user_data(user)
