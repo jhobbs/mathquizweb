@@ -17,7 +17,6 @@ def ensure_question_type(question_type_name):
      try:
          return QuestionType.objects.get(name=question_type_name)
      except QuestionType.DoesNotExist:
-         print("Adding: %s" % (question_type_name))
          qt = QuestionType(name=question_type_name)
          qt.save()
          return qt
@@ -40,10 +39,10 @@ def migrate_question_result(user, question_result):
         question_type=question_type,
         state=state,
         answer_string="%s" % question.answer,
-        properties=properties
-#        options=yaml_question.provided_options,
+        properties=properties,
+        options=yaml_question.provided_options,
         )
-    print question.properties
+    print question
     question.save()
 
 def migrate_data_for_user(user):
