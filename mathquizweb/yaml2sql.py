@@ -40,6 +40,7 @@ def migrate_question_result(user, question_result):
         state=state,
         properties=properties,
         options=yaml_question.provided_options,
+        correct=question_result.result == 1,
         )
     print question
     question.save()
