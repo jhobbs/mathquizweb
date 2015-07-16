@@ -21,7 +21,7 @@ def ensure_question_type(question_type_name):
          qt.save()
          return qt
 
-default_properties = ['uuid', 'provided_options', 'answer_string']
+default_properties = ['uuid', 'provided_options']
 
 def migrate_question_result(user, question_result):
     question = question_result.question
@@ -38,7 +38,6 @@ def migrate_question_result(user, question_result):
         user=user,
         question_type=question_type,
         state=state,
-        answer_string="%s" % question.answer,
         properties=properties,
         options=yaml_question.provided_options,
         )

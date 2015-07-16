@@ -18,6 +18,5 @@ class Question(models.Model):
     user = models.ForeignKey(User)
     question_type = models.ForeignKey(QuestionType)
     state = models.ForeignKey(QuestionState)
-    answer_string = models.CharField(max_length=255)
     options = models.TextField()
     properties = models.TextField()
