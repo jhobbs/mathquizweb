@@ -36,17 +36,17 @@ def generate_stats_from_db(user):
 
     questions = results['questions']
 
-    questions['total'] = Question.objects.filter(user=user).count()
+    user_questions = Question.objects.filter(user=user, state__name='answered')
+    questions['total'] = user_questions.count()
 
     if questions['total'] == 0:
         questions['correct'] = 0
         questions['success_rate'] = 0
         return results
 
-    user_questions = Question.objects.filter(
-        user=user, correct=True, state__name='answered')
+    correct_questions = user_questions.filter(correct=True)
     questions['correct'] = \
-        user_questions.count()
+        correct_questions.count()
     questions['success_rate'] = \
         "%.02f" % (float(questions['correct']) / questions['total'] * 100)
 
