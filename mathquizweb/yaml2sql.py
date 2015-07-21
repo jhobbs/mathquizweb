@@ -34,7 +34,7 @@ def migrate_question_result(user, question_result):
         k: v for k,v in yaml_question.__dict__.iteritems()
         if not k in default_properties})
     question = Question(
-        id=yaml_question.uuid,
+        uuid=yaml_question.uuid,
         user=user,
         question_type=question_type,
         state=state,

@@ -13,22 +13,63 @@ from mathquiz.storage import (
     get_unanswered_question,
     remove_unanswered_question,
     )
-from mathquiz.stats import generate_stats 
+from mathquiz.stats import generate_stats
+from mathquizweb.models import (
+    Question,
+    QuestionType,
+    )
 
 from mathquizweb.forms import (
     QuestionForm,
     UserForm,
     )
+from mathquizweb.svg import get_shape_svgs
 
 defaultoptions = namedtuple('options', [])
 
-import mathquizweb.models
+
+def generate_stats_from_db(user):
+    results = {
+        'questions': {},
+        'question_types': {},
+    }
+
+    questions = results['questions']
+
+    questions['total'] = Question.objects.filter(user=user).count()
+
+    if questions['total'] == 0:
+        questions['correct'] = 0
+        questions['success_rate'] = 0
+        return results
+
+    user_questions = Question.objects.filter(
+        user=user, correct=True, state__name='answered')
+    questions['correct'] = \
+        user_questions.count()
+    questions['success_rate'] = \
+        "%.02f" % (float(questions['correct']) / questions['total'] * 100)
+
+    question_types = results['question_types']
+
+    for question_type in QuestionType.objects.all():
+        question_types[question_type.name] = {}
+        question_type_entry = question_types[question_type.name]
+        questions_of_type = user_questions.filter(
+            question_type=question_type)[0:30]
+        question_type_entry['total'] = len(questions_of_type)
+        correct_of_type = len([
+            question for question in questions_of_type
+            if question.correct])
+        question_type_entry['correct'] = correct_of_type
+
+    return results
 
 
 def get_default_data(request):
     data = {}
     if request.user.is_authenticated():
-        stats = generate_stats(request.user.username)
+        stats = generate_stats_from_db(request.user)
         data['stats'] = stats
 
     return data
@@ -97,52 +138,6 @@ def get_next_question(user):
     return question
 
 
-def svg_rectangle(width, height):
-    # find the longest and scale it to max size
-    if width > height:
-        scale = height / float(width)
-        scaled_width = 150
-        scaled_height = int(scale * scaled_width)
-    else:
-        scale = width / float(height)
-        scaled_height = 150
-        scaled_width = int(scale * scaled_height)
-
-    y_label_x = scaled_width + 5
-    y_label_y = max(15, scaled_height/2)
-
-    x_label_x = int(scaled_width / 2)
-    x_label_y = scaled_height + 20
-
-    text = (
-    '<svg width="200" height="200">'
-      '<rect width="%s" height="%s"></rect>'
-      '<text x="%s" y="%s">%s</text>'
-      '<text x="%s" y="%s">%s</text>'
-    '</svg>') % (
-            scaled_width, scaled_height,
-            y_label_x, y_label_y, height,
-            x_label_x, x_label_y, width)
-    return text
-
-
-shape_to_svg_handlers = {
-        'rectangle': svg_rectangle,
-    }
-
-
-def shape_to_svg(shape_type, shape_properties):
-    handler = shape_to_svg_handlers[shape_type]
-    result = handler(**shape_properties)
-    return result
-
-
-def get_shape_svgs(question):
-    return [shape_to_svg(shape_type, shape_properties)
-            for shape_type, shape_properties
-            in question.graphic_cue.iteritems()]
-
-
 def question(request):
     context = RequestContext(request)
     user = request.user.username
@@ -163,7 +158,7 @@ def home(request):
     if request.user.is_authenticated():
         if data['stats'] is not None:
             data['question_types'] = {
-                k.name: v
+                k: v
                 for k, v in data['stats']['question_types'].items()
             }
 

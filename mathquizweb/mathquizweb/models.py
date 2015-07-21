@@ -17,7 +17,7 @@ class QuestionState(models.Model):
     
 
 class Question(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User)
     question_type = models.ForeignKey(QuestionType)
     state = models.ForeignKey(QuestionState)
