@@ -4,7 +4,10 @@ from django.shortcuts import (
     )
 from django.template import RequestContext
 from collections import namedtuple
-from mathquiz.quiz import Quiz
+from mathquiz.quiz import (    
+    get_next_question_by_history,
+    Quiz,
+    )
 from mathquiz.questions import builtin_question_types
 from mathquiz.storage import (
     add_answered_question,
@@ -19,6 +22,9 @@ from mathquizweb.models import (
     QuestionType,
     )
 
+from mathquizweb.stats import (
+    generate_stats_from_db,
+    )
 from mathquizweb.forms import (
     QuestionForm,
     UserForm,
@@ -26,44 +32,6 @@ from mathquizweb.forms import (
 from mathquizweb.svg import get_shape_svgs
 
 defaultoptions = namedtuple('options', [])
-
-
-def generate_stats_from_db(user):
-    results = {
-        'questions': {},
-        'question_types': {},
-    }
-
-    questions = results['questions']
-
-    user_questions = Question.objects.filter(user=user, state__name='answered')
-    questions['total'] = user_questions.count()
-
-    if questions['total'] == 0:
-        questions['correct'] = 0
-        questions['success_rate'] = 0
-        return results
-
-    correct_questions = user_questions.filter(correct=True)
-    questions['correct'] = \
-        correct_questions.count()
-    questions['success_rate'] = \
-        "%.02f" % (float(questions['correct']) / questions['total'] * 100)
-
-    question_types = results['question_types']
-
-    for question_type in QuestionType.objects.all():
-        question_types[question_type.name] = {}
-        question_type_entry = question_types[question_type.name]
-        questions_of_type = user_questions.filter(
-            question_type=question_type)[0:30]
-        question_type_entry['total'] = len(questions_of_type)
-        correct_of_type = len([
-            question for question in questions_of_type
-            if question.correct])
-        question_type_entry['correct'] = correct_of_type
-
-    return results
 
 
 def get_default_data(request):
@@ -126,23 +94,19 @@ def answer(request):
         context_instance=context)
 
 
+
 def get_next_question(user):
-    unanswered = get_unanswered_question(user)
+    unanswered = get_unanswered_question_from_db(user)
     if unanswered is not None:
         return unanswered
 
-    user_data = get_current_user_data(user)
-    quiz = Quiz(builtin_question_types, user_data)
-    [question] = quiz.questions(1, defaultoptions)
-    add_unanswered_question(user, question)
-    return question
+    return get_next_question_by_history(user)
 
 
 def question(request):
     context = RequestContext(request)
-    user = request.user.username
     data = get_default_data(request)
-    data['question'] = get_next_question(user)
+    data['question'] = get_next_question(request.user)
     data['shape_svgs'] = get_shape_svgs(data['question'])
 
     return render_to_response(
