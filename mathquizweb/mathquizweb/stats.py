@@ -1,10 +1,12 @@
 import random
+import yaml
 
 from mathquiz.questions import question_name_to_class_name
 import mathquiz.questions
 
 from mathquizweb.models import (
     Question,
+    QuestionState,
     QuestionType,
     )
 
@@ -59,7 +61,24 @@ def get_unanswered_question_from_db(user):
     if len(unanswered_questions) == 0:
         return None
 
-    return unanswered_questions[0]
+    return unanswered_questions[0].get_mq_question()
+
+default_properties = ['uuid', 'provided_options']
+
+def add_unanswered_question(user, question, question_type):
+    properties = yaml.dump({
+        k: v for k,v in question.__dict__.iteritems()
+        if not k in default_properties})
+    question_instance = Question(
+        uuid=question.uuid,
+        user=user,
+        question_type=question_type,
+        state=QuestionState.objects.get(name='unanswered'),
+        properties=properties,
+        options=question.provided_options,
+        correct=None,
+        )
+    question_instance.save()
 
 
 def get_next_question_from_db(user):
@@ -69,4 +88,5 @@ def get_next_question_from_db(user):
     class_name = question_name_to_class_name(question_type.name)
     question_class = getattr(mathquiz.questions, class_name)
     question = question_class({})
+    add_unanswered_question(user, question, question_type)
     return question

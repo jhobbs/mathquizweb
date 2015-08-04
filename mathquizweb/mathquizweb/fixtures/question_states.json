@@ -1,1 +1,4 @@
-[{"fields": {"name": "answered"}, "model": "mathquizweb.questionstate", "pk": 1}]
+[
+    {"fields": {"name": "answered"}, "model": "mathquizweb.questionstate", "pk": 1},
+    {"fields": {"name": "unanswered"}, "model": "mathquizweb.questionstate", "pk": 2}
+]
