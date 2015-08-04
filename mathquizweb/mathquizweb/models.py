@@ -29,6 +29,7 @@ class Question(models.Model):
         class_name = question_name_to_class_name(self.question_type.name)
         question_class = getattr(mathquiz.questions, class_name)
         question = question_class({}, yaml.load(self.properties))
+        question.uuid = self.uuid
         if self.correct:
             question.result = 1
         elif not self.correct:

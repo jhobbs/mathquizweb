@@ -19,6 +19,7 @@ from mathquiz.storage import (
 from mathquiz.stats import generate_stats
 from mathquizweb.models import (
     Question,
+    QuestionState,
     QuestionType,
     )
 
@@ -70,7 +71,6 @@ def generate_question_response(question, answer):
 
 def answer(request):
     context = RequestContext(request)
-    user = request.user.username
     data = get_default_data(request)
 
     if request.method == "POST":
@@ -78,13 +78,21 @@ def answer(request):
         if form.is_valid():
             answer = form.cleaned_data['answer']
             uuid = form.cleaned_data['uuid']
-            question = get_unanswered_question(user, uuid)
+            questions = Question.objects.filter(
+                user=request.user, uuid=uuid)
+            if len(questions) == 0:
+                question = None
+            else:
+                question_instance = questions[0]
+                question = question_instance.get_mq_question()
+
             data.update(generate_question_response(question, answer))
-            if question:
-                add_answered_question(
-                    user, question, answer, question.check_answer(answer))
-                remove_unanswered_question(user, uuid)
-                data['stats'] = generate_stats(user)
+            if question is not None:
+                question_instance.state = QuestionState.objects.get(
+                    name='answered')
+                question_instance.correct = question.check_answer(answer)
+                question_instance.save()
+                data['stats'] = generate_stats_from_db(request.user)
         else:
             data['headline'] = "Bad data received!"
     else:
