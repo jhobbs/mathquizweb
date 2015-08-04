@@ -58,3 +58,5 @@ target/
 
 *.swp
 *.sqlite3
+
+tags
