@@ -24,6 +24,8 @@ from mathquizweb.models import (
 
 from mathquizweb.stats import (
     generate_stats_from_db,
+    get_next_question_from_db,
+    get_unanswered_question_from_db,
     )
 from mathquizweb.forms import (
     QuestionForm,
@@ -94,13 +96,12 @@ def answer(request):
         context_instance=context)
 
 
-
 def get_next_question(user):
     unanswered = get_unanswered_question_from_db(user)
     if unanswered is not None:
         return unanswered
 
-    return get_next_question_by_history(user)
+    return get_next_question_from_db(user)
 
 
 def question(request):

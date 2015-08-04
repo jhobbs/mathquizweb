@@ -1,3 +1,8 @@
+import random
+
+from mathquiz.questions import question_name_to_class_name
+import mathquiz.questions
+
 from mathquizweb.models import (
     Question,
     QuestionType,
@@ -47,11 +52,21 @@ def generate_stats_from_db(user):
     return results
 
 
-def get_unanswered_qusetion_from_db(user):
-    unanswered_questions = Question.object.filter(
+def get_unanswered_question_from_db(user):
+    unanswered_questions = Question.objects.filter(
         user=user, state__name='unanswered')
 
-    if len(uanswered_questions) == 0:
+    if len(unanswered_questions) == 0:
         return None
 
     return unanswered_questions[0]
+
+
+def get_next_question_from_db(user):
+    """FIXME: random for now, not based on mastery."""
+    question_types = list(QuestionType.objects.all())
+    question_type = random.choice(question_types)
+    class_name = question_name_to_class_name(question_type.name)
+    question_class = getattr(mathquiz.questions, class_name)
+    question = question_class({})
+    return question
