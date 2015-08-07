@@ -19,7 +19,15 @@
             </tr>
             {% for name, history in question_types.items %}
             <tr>
-                <td>{{name}}</td>
+                <td>
+                {% if history.blacklisted %}
+                <strike>
+                {% endif %}
+                {{name}}
+                {% if history.blacklisted %}
+                </strike>
+                {% endif %}
+                </td>
                 <td>{{history.mastery}}</td>
                 <td>{{history.correct}}/{{history.total}}</td>
             </tr>

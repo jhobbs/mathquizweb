@@ -50,6 +50,8 @@ def generate_stats_from_db(user):
             question_type_entry['mastery'] = True
         else:
             question_type_entry['mastery'] = False
+        question_type_entry['blacklisted'] = \
+            question_type.blacklisted_users.filter(id=user.id).exists()
 
     return results
 
