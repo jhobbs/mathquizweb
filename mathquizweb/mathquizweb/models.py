@@ -10,6 +10,7 @@ from mathquiz.questions import question_name_to_class_name
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=100)
+    blacklisted_users = models.ManyToManyField(User)
 
 
 class QuestionState(models.Model):
