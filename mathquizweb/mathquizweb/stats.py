@@ -83,7 +83,8 @@ def add_unanswered_question(user, question, question_type):
 
 def get_next_question_from_db(user):
     """FIXME: random for now, not based on mastery."""
-    question_types = list(QuestionType.objects.all())
+    allowed_questions = QuestionType.objects.exclude(blacklisted_users=user)
+    question_types = list(allowed_questions)
     question_type = random.choice(question_types)
     class_name = question_name_to_class_name(question_type.name)
     question_class = getattr(mathquiz.questions, class_name)
