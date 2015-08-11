@@ -115,8 +115,9 @@ def get_next_question(user):
 def question(request):
     context = RequestContext(request)
     data = get_default_data(request)
-    data['question'] = get_next_question(request.user)
-    data['shape_svgs'] = get_shape_svgs(data['question'])
+    if request.user.is_authenticated():
+        data['question'] = get_next_question(request.user)
+        data['shape_svgs'] = get_shape_svgs(data['question'])
 
     return render_to_response(
         'question.html',

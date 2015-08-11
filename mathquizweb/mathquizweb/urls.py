@@ -5,8 +5,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'mathquizweb.views.home', name='home'),
-    url(r'^question$', 'mathquizweb.views.question', name='question'),
+    url(r'^$', 'mathquizweb.views.question', name='home'),
+    url(r'^stats$', 'mathquizweb.views.home', name='stats'),
     url(r'^answer$', 'mathquizweb.views.answer', name='answer'),
     url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout'),

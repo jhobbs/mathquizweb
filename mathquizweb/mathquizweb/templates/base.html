@@ -44,8 +44,7 @@
                 <!-- Left Nav Section -->
                 <ul class="left">
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'question' %}">Questions</a></li>
-                    <li><a>{{stats.questions.success_rate}}% of {{stats.questions.total}}</a></li>
+                    <li><a href="{% url 'stats' %}">{{stats.questions.success_rate}}% of {{stats.questions.total}}</a></li>
 		    {% endif %}
                 </ul>
             </section>
