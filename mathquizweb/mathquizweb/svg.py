@@ -1,4 +1,4 @@
-def svg_rectangle(width, height):
+def svg_rectangle(width, height, solid=False):
     # find the longest and scale it to max size
     if width > height:
         scale = height / float(width)
@@ -15,13 +15,18 @@ def svg_rectangle(width, height):
     x_label_x = int(scaled_width / 2)
     x_label_y = scaled_height + 20
 
+    if solid:
+        style = "fill:black;stroke:black;"
+    else:
+        style = "fill-opacity:0;stroke-width:1;stroke:black"
+
     text = (
     '<svg width="200" height="200">'
-      '<rect width="%s" height="%s"></rect>'
+    '<rect width="%s" height="%s" style="%s"></rect>'
       '<text x="%s" y="%s">%s</text>'
       '<text x="%s" y="%s">%s</text>'
     '</svg>') % (
-            scaled_width, scaled_height,
+            scaled_width, scaled_height, style,
             y_label_x, y_label_y, height,
             x_label_x, x_label_y, width)
     return text
