@@ -10,6 +10,10 @@ from mathquizweb.models import (
     QuestionType,
     )
 
+MASTERY_COUNT = 30
+MASTERY_PERCENT = 0.9
+UNMASTERED_MULTIPLIER = 5
+
 
 def generate_stats_from_db(user):
     results = {
@@ -83,11 +87,37 @@ def add_unanswered_question(user, question, question_type):
     question_instance.save()
 
 
+def question_type_is_mastered(user, question_type):
+    user_questions = Question.objects.filter(user=user, state__name='answered')
+    questions_of_type = user_questions.filter(
+        question_type=question_type)[0:30]
+    num_questions = len(questions_of_type)
+    if num_questions < MASTERY_COUNT:
+        return False
+    num_correct = len([
+        question for question in questions_of_type
+        if question.correct])
+    percent_correct = float(num_correct) / num_questions
+    if percent_correct >= MASTERY_PERCENT:
+        return True
+    return False
+
+
 def get_next_question_from_db(user):
     """FIXME: random for now, not based on mastery."""
     allowed_questions = QuestionType.objects.exclude(blacklisted_users=user)
     question_types = list(allowed_questions)
-    question_type = random.choice(question_types)
+    adjusted_question_types = []
+
+    # Make unmastered questions more likely to appear.
+    for question_type in question_types:
+        if question_type_is_mastered(user, question_type):
+            adjusted_question_types.append(question_type)
+        else:
+            adjusted_question_types.extend(
+                [question_type] * UNMASTERED_MULTIPLIER)
+
+    question_type = random.choice(adjusted_question_types)
     class_name = question_name_to_class_name(question_type.name)
     question_class = getattr(mathquiz.questions, class_name)
     question = question_class({})

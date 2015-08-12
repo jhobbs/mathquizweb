@@ -13,6 +13,9 @@ class QuestionType(models.Model):
     blacklisted_users = models.ManyToManyField(User,
         related_name='blacklisted_questions')
 
+    def __repr__(self):
+        return "<QuestionType: %s>" % (self.name)
+
 
 class QuestionState(models.Model):
     name = models.CharField(max_length=100)
