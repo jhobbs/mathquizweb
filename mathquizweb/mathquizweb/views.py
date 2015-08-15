@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.shortcuts import (
     redirect,
     render_to_response,
@@ -7,6 +8,7 @@ from collections import namedtuple
 from mathquizweb.models import (
     Question,
     QuestionState,
+    QuestionType,
     )
 from mathquizweb.stats import (
     generate_stats_from_db,
@@ -152,3 +154,23 @@ def register(request):
         'registration/register.html',
         {'user_form': user_form, 'registered': registered},
         context)
+
+
+def settings(request):
+    context = RequestContext(request)
+    data = get_default_data(request)
+
+    if request.user.is_authenticated():
+        all_enabled = request.user.enabled_questions.count() == 0
+        data['question_types'] = defaultdict(dict)
+        for question_type in QuestionType.objects.all():
+            if all_enabled:
+                data['question_types'][question_type.name]['enabled'] = True
+            else:
+                data['question_types'][question_type.name]['enabled'] = \
+                    question_type in request.user.enabled_questions
+        data['question_types'] = dict(data['question_types'])
+    return render_to_response(
+        'settings.html',
+        data,
+        context_instance=context)

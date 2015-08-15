@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+        {% if user.is_authenticated %}
+        <h1>Settings</h1>
+        <form action="{% url 'settings'%}" method=POST>
+        <table>
+            <tr>
+                <td><b>Question Type</b></td>
+                <td><b>Enabled</b></td>
+            </tr>
+            {% for name, properties in question_types.items %}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{properties.enabled}}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        </form>
+        {% else %}
+        <h1>mathquiz</h1>
+        <a href="/accounts/register">Sign up</a> or <a href="/accounts/login">sign in</a> to start your math quiz!
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

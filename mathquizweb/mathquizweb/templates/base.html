@@ -34,7 +34,7 @@
                 <!-- Right Nav Section -->
                 <ul class="right">
                     {% if user.is_authenticated %}
-	            <li><a href="/">Welcome, {{ user }}!</a></li>
+	            <li><a href="/accounts/settings">Welcome, {{ user }}!</a></li>
                     <li><a href="/accounts/logout/?next=/">Log out</a></li>
                     {% else %}
                     <li><a href="/accounts/login?next={{request.path}}">Sign in</a></li>
