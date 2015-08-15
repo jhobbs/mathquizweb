@@ -1,4 +1,4 @@
 # mathquizweb
 A web front end to mathquiz
 
-Except it doesn't work yet!
+You can use this at http://mathquiz.me.
