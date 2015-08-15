@@ -71,10 +71,11 @@ def get_unanswered_question_from_db(user):
 
 default_properties = ['uuid', 'provided_options']
 
+
 def add_unanswered_question(user, question, question_type):
     properties = yaml.dump({
-        k: v for k,v in question.__dict__.iteritems()
-        if not k in default_properties})
+        k: v for k, v in question.__dict__.iteritems()
+        if k not in default_properties})
     question_instance = Question(
         uuid=question.uuid,
         user=user,

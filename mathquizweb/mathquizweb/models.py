@@ -4,14 +4,13 @@ import mathquiz.questions
 
 from django.contrib.auth.models import User
 from django.db import models
-from yamlfield.fields import YAMLField
 from mathquiz.questions import question_name_to_class_name
 
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=100)
-    blacklisted_users = models.ManyToManyField(User,
-        related_name='blacklisted_questions')
+    blacklisted_users = models.ManyToManyField(
+        User, related_name='blacklisted_questions')
 
     def __repr__(self):
         return "<QuestionType: %s>" % (self.name)
@@ -19,7 +18,7 @@ class QuestionType(models.Model):
 
 class QuestionState(models.Model):
     name = models.CharField(max_length=100)
-    
+
 
 class Question(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)

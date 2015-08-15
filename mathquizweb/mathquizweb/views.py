@@ -4,25 +4,10 @@ from django.shortcuts import (
     )
 from django.template import RequestContext
 from collections import namedtuple
-from mathquiz.quiz import (    
-    get_next_question_by_history,
-    Quiz,
-    )
-from mathquiz.questions import builtin_question_types
-from mathquiz.storage import (
-    add_answered_question,
-    get_current_user_data,
-    add_unanswered_question,
-    get_unanswered_question,
-    remove_unanswered_question,
-    )
-from mathquiz.stats import generate_stats
 from mathquizweb.models import (
     Question,
     QuestionState,
-    QuestionType,
     )
-
 from mathquizweb.stats import (
     generate_stats_from_db,
     get_next_question_from_db,

@@ -21,11 +21,11 @@ def svg_rectangle(width, height, solid=False):
         style = "fill-opacity:0;stroke-width:1;stroke:black"
 
     text = (
-    '<svg width="200" height="200">'
-    '<rect width="%s" height="%s" style="%s"></rect>'
-      '<text x="%s" y="%s">%s</text>'
-      '<text x="%s" y="%s">%s</text>'
-    '</svg>') % (
+        '<svg width="200" height="200">'
+        '<rect width="%s" height="%s" style="%s"></rect>'
+        '<text x="%s" y="%s">%s</text>'
+        '<text x="%s" y="%s">%s</text>'
+        '</svg>') % (
             scaled_width, scaled_height, style,
             y_label_x, y_label_y, height,
             x_label_x, x_label_y, width)
@@ -33,7 +33,7 @@ def svg_rectangle(width, height, solid=False):
 
 
 shape_to_svg_handlers = {
-        'rectangle': svg_rectangle,
+    'rectangle': svg_rectangle,
     }
 
 
