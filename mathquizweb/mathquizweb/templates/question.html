@@ -3,7 +3,7 @@
 <div class="row">
     <div class="large-12 columns">
         {% if user.is_authenticated %}
-        <h1>Answer the question! {{ response }}</h1>
+        <h1>{{question.fancy_name}}</h1>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
         {% for svg in shape_svgs %}
