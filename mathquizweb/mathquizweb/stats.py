@@ -54,8 +54,6 @@ def generate_stats_from_db(user):
             question_type_entry['mastery'] = True
         else:
             question_type_entry['mastery'] = False
-        question_type_entry['blacklisted'] = \
-            question_type.blacklisted_users.filter(id=user.id).exists()
 
     return results
 
@@ -106,10 +104,11 @@ def question_type_is_mastered(user, question_type):
 
 def get_next_question_from_db(user):
     """FIXME: random for now, not based on mastery."""
-    allowed_questions = QuestionType.objects.exclude(blacklisted_users=user)
-    question_types = list(allowed_questions)
+    if user.enabled_questions.count() > 0:
+        question_types = user.enabled_questions.all()
+    else:
+        question_types = QuestionType.objects.all()
     adjusted_question_types = []
-
     # Make unmastered questions more likely to appear.
     for question_type in question_types:
         if question_type_is_mastered(user, question_type):
