@@ -168,7 +168,7 @@ def settings(request):
                 data['question_types'][question_type.name]['enabled'] = True
             else:
                 data['question_types'][question_type.name]['enabled'] = \
-                    question_type in request.user.enabled_questions
+                    question_type in request.user.enabled_questions.all()
         data['question_types'] = dict(data['question_types'])
     return render_to_response(
         'settings.html',
