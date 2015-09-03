@@ -4,6 +4,9 @@
     <div class="large-12 columns">
         {% if user.is_authenticated %}
         <h1>Settings</h1>
+        {% if saved %}
+        <h5>Saved!</h5>
+        {% endif %}
         <form action="{% url 'settings'%}" method=POST>
         <table>
         <tr>

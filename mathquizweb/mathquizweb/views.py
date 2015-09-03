@@ -168,6 +168,7 @@ def settings(request):
     data['form'] = settings_form
     if settings_form.is_valid():
         settings_form.save(request.user)
+        data['saved'] = True
 
     all_enabled = request.user.enabled_questions.count() == 0
     data['question_types'] = defaultdict(dict)
