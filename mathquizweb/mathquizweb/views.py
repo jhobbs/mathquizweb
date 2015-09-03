@@ -83,7 +83,7 @@ def answer(request):
         else:
             data['headline'] = "Bad data received!"
     else:
-        return redirect('question')
+        return redirect('home')
 
     return render_to_response(
         'answer.html',
@@ -160,16 +160,19 @@ def settings(request):
     context = RequestContext(request)
     data = get_default_data(request)
 
-    if request.user.is_authenticated():
-        all_enabled = request.user.enabled_questions.count() == 0
-        data['question_types'] = defaultdict(dict)
-        for question_type in QuestionType.objects.all():
-            if all_enabled:
-                data['question_types'][question_type.name]['enabled'] = True
-            else:
-                data['question_types'][question_type.name]['enabled'] = \
-                    question_type in request.user.enabled_questions.all()
-        data['question_types'] = dict(data['question_types'])
+    if not request.user.is_authenticated():
+        return redirect('home')
+
+
+    all_enabled = request.user.enabled_questions.count() == 0
+    data['question_types'] = defaultdict(dict)
+    for question_type in QuestionType.objects.all():
+        if all_enabled:
+            data['question_types'][question_type.name]['enabled'] = True
+        else:
+            data['question_types'][question_type.name]['enabled'] = \
+                question_type in request.user.enabled_questions.all()
+    data['question_types'] = dict(data['question_types'])
     return render_to_response(
         'settings.html',
         data,
