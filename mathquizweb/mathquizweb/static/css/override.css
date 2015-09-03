@@ -14,11 +14,11 @@
 }
 
 .button {
-  background-color: #006756;
+  background-color: #0E4864;
 }
 
 .button:hover {
-  background-color: #00362D;
+  background-color: #03364F;
 }
 
 .button.alert:hover {
