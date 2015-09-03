@@ -5,19 +5,14 @@
         {% if user.is_authenticated %}
         <h1>Settings</h1>
         <form action="{% url 'settings'%}" method=POST>
-        {% csrf_token %}
         <table>
-            <tr>
-                <td><b>Question Type</b></td>
-                <td><b>Enabled</b></td>
-            </tr>
-            {% for name, properties in question_types.items %}
-            <tr>
-                <td>{{name}}</td>
-                <td><input type="checkbox" name="{{name}}" {% if properties.enabled %} checked="checked"{% endif %}></td>
-            </tr>
-        {% endfor %}
+        <tr>
+            <td><b>Question Type</b></td>
+            <td><b>Enabled</b></td>
+        </tr>
+        {{ form.as_table }}
         </table>
+        {% csrf_token %}
         <input type="submit" name="submit" value="Save" class="button tiny"/>
         </form>
         {% else %}

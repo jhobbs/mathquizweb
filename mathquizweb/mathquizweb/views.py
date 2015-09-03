@@ -17,6 +17,7 @@ from mathquizweb.stats import (
     )
 from mathquizweb.forms import (
     QuestionForm,
+    SettingsForm,
     UserForm,
     )
 from mathquizweb.svg import get_shape_svgs
@@ -163,6 +164,10 @@ def settings(request):
     if not request.user.is_authenticated():
         return redirect('home')
 
+    settings_form = SettingsForm(request.POST or None, user=request.user)
+    data['form'] = settings_form
+    if settings_form.is_valid():
+        settings_form.save(request.user)
 
     all_enabled = request.user.enabled_questions.count() == 0
     data['question_types'] = defaultdict(dict)
