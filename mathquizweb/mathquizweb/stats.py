@@ -80,7 +80,7 @@ def add_unanswered_question(user, question, question_type):
         question_type=question_type,
         state=QuestionState.objects.get(name='unanswered'),
         properties=properties,
-        options=question.provided_options,
+        options=question.options,
         correct=None,
         )
     question_instance.save()
@@ -120,6 +120,6 @@ def get_next_question_from_db(user):
     question_type = random.choice(adjusted_question_types)
     class_name = question_name_to_class_name(question_type.name)
     question_class = getattr(mathquiz.questions, class_name)
-    question = question_class({})
+    question = question_class()
     add_unanswered_question(user, question, question_type)
     return question
