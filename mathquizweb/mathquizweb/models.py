@@ -40,3 +40,9 @@ class Question(models.Model):
             question.result = 0
 
         return question
+
+
+class UserQuestionTypeOptions(models.Model):
+    user = models.ForeignKey(User)
+    question_type = models.ForeignKey(QuestionType)
+    options = models.TextField()
