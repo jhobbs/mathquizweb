@@ -15,6 +15,12 @@ class QuestionType(models.Model):
     def __repr__(self):
         return "<QuestionType: %s>" % (self.name)
 
+    @property
+    def mathquiz_class(self):
+        class_name = question_name_to_class_name(self.name)
+        question_class = getattr(mathquiz.questions, class_name)
+        return question_class
+
 
 class QuestionState(models.Model):
     name = models.CharField(max_length=100)
@@ -30,8 +36,7 @@ class Question(models.Model):
     correct = models.NullBooleanField()
 
     def get_mq_question(self):
-        class_name = question_name_to_class_name(self.question_type.name)
-        question_class = getattr(mathquiz.questions, class_name)
+        question_class = self.question_type.mathquiz_class
         question = question_class({}, yaml.load(self.properties))
         question.uuid = self.uuid
         if self.correct:

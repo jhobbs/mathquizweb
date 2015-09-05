@@ -126,8 +126,7 @@ def get_next_question_from_db(user):
         question_options = yaml.load(question_options_object.options)
     else:
         question_options = None
-    class_name = question_name_to_class_name(question_type.name)
-    question_class = getattr(mathquiz.questions, class_name)
+    question_class = question_type.mathquiz_class
     question = question_class(options=question_options)
     add_unanswered_question(user, question, question_type)
     return question
