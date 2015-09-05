@@ -8,6 +8,7 @@ from mathquizweb.models import (
     Question,
     QuestionState,
     QuestionType,
+    UserQuestionTypeOptions,
     )
 
 MASTERY_COUNT = 30
@@ -118,8 +119,15 @@ def get_next_question_from_db(user):
                 [question_type] * UNMASTERED_MULTIPLIER)
 
     question_type = random.choice(adjusted_question_types)
+    question_options_query = UserQuestionTypeOptions.objects.filter(
+            user=user, question_type=question_type)
+    if question_options_query.exists():
+        [question_options_object] = question_options_query.all()
+        question_options = yaml.load(question_options_object.options)
+    else:
+        question_options = None
     class_name = question_name_to_class_name(question_type.name)
     question_class = getattr(mathquiz.questions, class_name)
-    question = question_class()
+    question = question_class(options=question_options)
     add_unanswered_question(user, question, question_type)
     return question
