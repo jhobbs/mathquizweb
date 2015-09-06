@@ -1,7 +1,13 @@
+import yaml
+
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
-from mathquizweb.models import QuestionType
+from mathquizweb.models import (
+    QuestionType,
+    UserQuestionTypeOptions,
+)
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class UserForm(ModelForm):
@@ -36,10 +42,32 @@ class SettingsForm(forms.Form):
         super(SettingsForm, self).__init__(*args, **kwargs)
 
         for question_type in QuestionType.objects.all():
-            self.fields[question_type.name] = forms.BooleanField(
-                label=question_type.name,
+            field_name = "%s.enabled" % (question_type.name)
+            self.fields[field_name] = forms.BooleanField(
+                label="%s: enabled" % (question_type.name),
                 initial=is_question_type_enabled(question_type, user),
                 required=False)
+
+            try:
+                user_options_object = UserQuestionTypeOptions.objects.get(
+                    user=user, question_type=question_type)
+                user_options = yaml.load(user_options_object.options)
+            except ObjectDoesNotExist:
+                user_options = {}
+            builtin_options = question_type.mathquiz_class.options
+            for option_name, option_details in builtin_options.iteritems():
+                if option_details['type'] != int:
+                    raise Exception("Unknown option type!")
+                global_option_name = "%s.%s" % (question_type.name, option_name)
+                field_label = "%s: %s" % (question_type.name, option_name)
+                if option_name in user_options:
+                    initial_value = user_options[option_name]
+                else:
+                    initial_value = option_details['default']
+                self.fields[global_option_name] = forms.IntegerField(
+                    label=field_label,
+                    initial=initial_value,
+                    required=False)
 
     def save(self, user):
         if len(self.changed_data) == 0:
@@ -48,11 +76,30 @@ class SettingsForm(forms.Form):
         if user.enabled_questions.count() == 0:
             initialize_question_types(user)
 
-        for question_type_name in self.changed_data:
+        modified_question_types = []
+        for field_name in self.changed_data:
+            data = self.cleaned_data[field_name]
+            question_type_name, setting = field_name.split(".")
             question_type = QuestionType.objects.get(name=question_type_name)
-            enabled = self.cleaned_data[question_type_name]
-            if enabled:
-                question_type.enabled_users.add(user)
-            else:
-                question_type.enabled_users.remove(user)
-            question_type.save()
+            if setting == 'enabled':
+                enabled = data
+                if enabled:
+                    question_type.enabled_users.add(user)
+                else:
+                    question_type.enabled_users.remove(user)
+                question_type.save()
+            elif setting in question_type.mathquiz_class.options:
+                options = {setting: data}
+                try:
+                    uqto = UserQuestionTypeOptions.objects.get(
+                        user=user, question_type=question_type)
+                except ObjectDoesNotExist:
+                    options_string = yaml.dump(options)
+                    uqto = UserQuestionTypeOptions(
+                        user, question_type, options=options_string)
+                    uqto.save()
+                    continue
+                existing = yaml.load(uqto.options)
+                existing.update(options)
+                uqto.options = yaml.dump(existing)
+                uqto.save()
