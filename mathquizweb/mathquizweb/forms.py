@@ -96,7 +96,8 @@ class SettingsForm(forms.Form):
                 except ObjectDoesNotExist:
                     options_string = yaml.dump(options)
                     uqto = UserQuestionTypeOptions(
-                        user, question_type, options=options_string)
+                        user=user, question_type=question_type,
+                        options=options_string)
                     uqto.save()
                     continue
                 existing = yaml.load(uqto.options)
