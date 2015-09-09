@@ -86,9 +86,17 @@ Clock.prototype.drawClockFace = function() {
         strokeWidth: 4
       });
 
+      if (x >= 10)
+        horizontalOffset = 140;
+      else
+        horizontalOffset= 145;
+
+      hourLabel = this.s.text(horizontalOffset, 95, x.toString());
+
       var t = new Snap.Matrix();
       t.rotate((360/12)*x, 150, 150);
       hourStroke.transform(t);
+      hourLabel.transform(t);
   }
 
   this.hourHand = this.s.line(150,150,150,110);
