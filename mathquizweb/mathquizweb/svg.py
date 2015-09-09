@@ -32,8 +32,19 @@ def svg_rectangle(width, height, solid=False):
     return text
 
 
+def svg_clock(hours, minutes):
+   text = (
+      '<svg id="clock" width="300" height="300"></svg>'
+      '<script>'
+      'var clock = new Clock("clock", %d, %d);'
+      'clock.hideSecondHand();'
+      '</script>') % (hours, minutes)
+   return text
+
+
 shape_to_svg_handlers = {
     'rectangle': svg_rectangle,
+    'clock': svg_clock,
     }
 
 
