@@ -8,7 +8,7 @@ from mathquiz.questions import question_name_to_class_name
 
 
 class QuestionType(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     enabled_users = models.ManyToManyField(
         User, related_name='enabled_questions')
 
@@ -23,11 +23,11 @@ class QuestionType(models.Model):
 
 
 class QuestionState(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
 
 class Question(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User)
     question_type = models.ForeignKey(QuestionType)
     state = models.ForeignKey(QuestionState)
@@ -51,3 +51,6 @@ class UserQuestionTypeOptions(models.Model):
     user = models.ForeignKey(User)
     question_type = models.ForeignKey(QuestionType)
     options = models.TextField()
+
+    class Meta:
+        unique_together = ("user", "question_type")
