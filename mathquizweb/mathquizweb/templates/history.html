@@ -10,6 +10,7 @@
                 <th>ID</th>
                 <th>Type</th>
                 <th>Correct</th>
+                <th>Answered at</th>
             </tr>
         </thead>
         <tbody>
@@ -18,6 +19,7 @@
                 <td>{{ question.id }}</td>
                 <td>{{ question.question_type.name }}</td>
                 <td>{{ question.correct }}</td>
+                <td>{{ question.answered_at }}</td>
             </tr>
         {% endfor %}
         </tbody>
