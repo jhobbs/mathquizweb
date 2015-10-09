@@ -138,7 +138,7 @@ def history(request):
 
     if request.user.is_authenticated():
         if data['stats'] is not None:
-            data['stats']['questions'] = Question.objects.filter(
+            data['stats']['question_history'] = Question.objects.filter(
                     state__name='answered',
                     user=request.user).order_by('-id')[:100]
 
