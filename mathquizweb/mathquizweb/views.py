@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 from django.shortcuts import (
     redirect,
     render_to_response,
@@ -79,6 +80,7 @@ def answer(request):
                 question_instance.state = QuestionState.objects.get(
                     name='answered')
                 question_instance.correct = question.check_answer(answer)
+                question_instance.answered_at = datetime.now()
                 question_instance.save()
                 data['stats'] = generate_stats_from_db(request.user)
         else:

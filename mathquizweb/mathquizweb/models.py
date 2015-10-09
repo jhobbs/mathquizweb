@@ -34,6 +34,7 @@ class Question(models.Model):
     options = models.TextField()
     properties = models.TextField()
     correct = models.NullBooleanField()
+    answered_at = models.DateTimeField(blank=True, null=True)
 
     def get_mq_question(self):
         question_class = self.question_type.mathquiz_class
