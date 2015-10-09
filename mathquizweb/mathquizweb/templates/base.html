@@ -47,7 +47,8 @@
                 <ul class="left">
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'stats' %}">{{stats.questions.success_rate}}% of {{stats.questions.total}}</a></li>
-		    {% endif %}
+                    <li><a href="{% url 'history' %}">History</a></li>
+                    {% endif %}
                 </ul>
             </section>
         </nav>

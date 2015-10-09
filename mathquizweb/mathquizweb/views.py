@@ -113,7 +113,7 @@ def question(request):
         context_instance=context)
 
 
-def home(request):
+def stats(request):
     context = RequestContext(request)
     data = get_default_data(request)
 
@@ -125,7 +125,23 @@ def home(request):
             }
 
     return render_to_response(
-        'index.html',
+        'stats.html',
+        data,
+        context_instance=context)
+
+
+def history(request):
+    context = RequestContext(request)
+    data = get_default_data(request)
+
+    if request.user.is_authenticated():
+        if data['stats'] is not None:
+            data['stats']['questions'] = Question.objects.filter(
+                    state__name='answered',
+                    user=request.user).order_by('-id')[:100]
+
+    return render_to_response(
+        'history.html',
         data,
         context_instance=context)
 

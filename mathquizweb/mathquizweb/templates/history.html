@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+        {% if user.is_authenticated %}
+        <h1>Your history</h1>
+        <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Correct</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in stats.questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>{{ question.question_type.name }}</td>
+                <td>{{ question.correct }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+        {% if not stats.questions %}
+        <p>No questions answered yet.</p>
+        {% endif %}
+        {% else %}
+        <h1>mathquiz</h1>
+        <a href="/accounts/register">Sign up</a> or <a href="/accounts/login">sign in</a> to start your math quiz!
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
