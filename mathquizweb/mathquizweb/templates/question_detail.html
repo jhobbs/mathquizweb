@@ -3,12 +3,15 @@
 <div class="row">
     <div class="large-12 columns">
         {% if user.is_authenticated %}
-        <h1>{{question.fancy_name}}</h1>
+        <h2>Answered: {{question.fancy_name}}</h2>
+        <p>Question was answered at {{question.answered_at}}</p>
+        <h3>Question<h3>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
         {% for svg in shape_svgs %}
         {{ svg|safe }}
         {% endfor %}
+        <h3>Answer</h3>
         {% if question.correct %}
         <p>Question was answered correctly: {{ question.answer }}</p>
         {% else %}

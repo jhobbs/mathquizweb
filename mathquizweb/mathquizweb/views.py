@@ -125,6 +125,8 @@ def question_detail(request, question_id):
         id=question_id, user=request.user)
     data['question'] = base_question.get_mq_question()
     data['question'].correct = base_question.correct
+    data['question'].given_answer = base_question.given_answer
+    data['question'].answered_at = base_question.answered_at
     data['shape_svgs'] = get_shape_svgs(data['question'])
 
     return render_to_response(
