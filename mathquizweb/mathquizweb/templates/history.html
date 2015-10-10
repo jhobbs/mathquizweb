@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load humanize %}
 <div class="row">
     <div class="large-12 columns">
         {% if user.is_authenticated %}
@@ -19,7 +20,7 @@
                 <td><a href="{% url 'question' question.id %}">{{question.id}}</a></td>
                 <td>{{ question.question_type.name }}</td>
                 <td>{{ question.correct }}</td>
-                <td>{{ question.answered_at }}</td>
+                <td>{{ question.answered_at|naturaltime}}</td>
             </tr>
         {% endfor %}
         </tbody>

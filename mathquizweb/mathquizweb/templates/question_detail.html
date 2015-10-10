@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+{% load humanize %}
 <div class="row">
     <div class="large-12 columns">
         {% if user.is_authenticated %}
         <h2>Answered: {{question.fancy_name}}</h2>
-        <p>Question was answered at {{question.answered_at}}</p>
+        <p>Question was answered {{question.answered_at|naturaltime}}</p>
         <h3>Question</h3>
         <p>{{question.explain}}</p>
         <p>{{question.question_string}}</p>
