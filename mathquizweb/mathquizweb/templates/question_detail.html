@@ -10,11 +10,11 @@
         {{ svg|safe }}
         {% endfor %}
         {% if question.correct %}
-        <p>Question was answered correctly.</p>
+        <p>Question was answered correctly: {{ question.answer }}</p>
         {% else %}
-        <p>Question was answered incorrectly.</p>
+        <p>Question was answered incorrectly: {{ question.given_answer }}</p>
+        <p>Correct answer: {{ question.answer }}</p>
         {% endif %}
-        <p>Answer: {{ question.answer }}</p>
         {% else %}
         <h1>mathquiz</h1>
         <a href="/accounts/register">Sign up</a> or <a href="/accounts/login">sign in</a> to start your math quiz!

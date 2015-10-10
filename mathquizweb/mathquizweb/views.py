@@ -81,6 +81,7 @@ def answer(request):
                     name='answered')
                 question_instance.correct = question.check_answer(answer)
                 question_instance.answered_at = datetime.now()
+                question_instance.given_answer = answer
                 question_instance.save()
                 data['stats'] = generate_stats_from_db(request.user)
         else:
