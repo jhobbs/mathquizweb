@@ -16,7 +16,7 @@
         <tbody>
         {% for question in stats.question_history %}
             <tr>
-                <td>{{ question.id }}</td>
+                <td><a href="{% url 'question' question.id %}">{{question.id}}</a></td>
                 <td>{{ question.question_type.name }}</td>
                 <td>{{ question.correct }}</td>
                 <td>{{ question.answered_at }}</td>

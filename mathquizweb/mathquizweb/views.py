@@ -115,6 +115,23 @@ def question(request):
         context_instance=context)
 
 
+def question_detail(request, question_id):
+    if not request.user.is_authenticated():
+        return redirect('home')
+    context = RequestContext(request)
+    data = get_default_data(request)
+    base_question = Question.objects.get(
+        id=question_id, user=request.user)
+    data['question'] = base_question.get_mq_question()
+    data['question'].correct = base_question.correct
+    data['shape_svgs'] = get_shape_svgs(data['question'])
+
+    return render_to_response(
+        'question_detail.html',
+        data,
+        context_instance=context)
+
+
 def stats(request):
     context = RequestContext(request)
     data = get_default_data(request)

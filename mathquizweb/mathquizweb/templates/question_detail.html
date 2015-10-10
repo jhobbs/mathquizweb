@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="large-12 columns">
+        {% if user.is_authenticated %}
+        <h1>{{question.fancy_name}}</h1>
+        <p>{{question.explain}}</p>
+        <p>{{question.question_string}}</p>
+        {% for svg in shape_svgs %}
+        {{ svg|safe }}
+        {% endfor %}
+        {% if question.correct %}
+        <p>Question was answered correctly.</p>
+        {% else %}
+        <p>Question was answered incorrectly.</p>
+        {% endif %}
+        <p>Answer: {{ question.answer }}</p>
+        {% else %}
+        <h1>mathquiz</h1>
+        <a href="/accounts/register">Sign up</a> or <a href="/accounts/login">sign in</a> to start your math quiz!
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
