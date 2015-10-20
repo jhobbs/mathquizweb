@@ -21,6 +21,10 @@ class QuestionType(models.Model):
         question_class = getattr(mathquiz.questions, class_name)
         return question_class
 
+    @property
+    def fancy_name(self):
+        return self.mathquiz_class().fancy_name()
+
 
 class QuestionState(models.Model):
     name = models.CharField(max_length=100, unique=True)

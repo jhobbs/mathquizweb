@@ -41,8 +41,8 @@ def generate_stats_from_db(user):
     question_types = results['question_types']
 
     for question_type in QuestionType.objects.all():
-        question_types[question_type.name] = {}
-        question_type_entry = question_types[question_type.name]
+        question_types[question_type.fancy_name] = {}
+        question_type_entry = question_types[question_type.fancy_name]
         questions_of_type = user_questions.filter(
             question_type=question_type)[0:30]
         question_type_entry['total'] = len(questions_of_type)
