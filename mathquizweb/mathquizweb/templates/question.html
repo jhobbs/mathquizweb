@@ -14,7 +14,7 @@
             <label for="answer">Answer: </label>
             <input autocomplete="off" id="answer" type="text" name="answer" autofocus></input>
             <input name="uuid" type="hidden" value="{{question.uuid}}">
-            <input type="submit" value="Submit">
+            <input type="submit" name="submit" value="Answer" class="button tiny"/>
         </form>
         {% else %}
         <h1>mathquiz</h1>
